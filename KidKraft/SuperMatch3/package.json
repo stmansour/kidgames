@@ -1,0 +1,21 @@
+{
+  "name": "supermatch3",
+  "version": "1.0.0",
+  "description": "Drag and drop matching game for kids",
+  "main": "game.js",
+  "scripts": {
+    "lint": "eslint game.js",
+    "lint:fix": "eslint game.js --fix"
+  },
+  "keywords": [
+    "game",
+    "kids",
+    "educational"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
+

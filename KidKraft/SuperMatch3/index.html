@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+    <title>SuperMatch3</title>
+    <!-- Google Font for character names -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="screen active">
+        <img id="splash-image" src="" alt="SuperMatch3">
+        <div id="tap-prompt" class="tap-prompt">Tap to Start</div>
+        <div id="loading-indicator" class="loading-indicator">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </div>
+
+    <!-- Avatar Selection Screen -->
+    <div id="avatar-selection-screen" class="screen">
+        <div class="avatar-selection-container">
+            <!-- Videos (behind everything) -->
+            <video class="avatar-video leon-video" autoplay loop muted playsinline>
+                <source src="assets/videos/leon-rotation.mp4" type="video/mp4">
+            </video>
+            
+            <video class="avatar-video andre-video" autoplay loop muted playsinline>
+                <source src="assets/videos/andre-rotation.mp4" type="video/mp4">
+            </video>
+            
+            <!-- Background overlay with transparent holes (on top of videos) -->
+            <!-- Will be set dynamically based on orientation -->
+            <img id="avatar-selection-bg" class="selection-background" src="" alt="Choose Your Character">
+            
+            <!-- Character Names (optional - background has title already) -->
+            <!-- Character Names (Grid Stacked) -->
+            <div class="name-container leon-name">
+                <span class="text-layer outline-layer" aria-hidden="true">Leon</span>
+                <span class="text-layer fill-layer">Leon</span>
+            </div>
+            
+            <div class="name-container andre-name">
+                <span class="text-layer outline-layer" aria-hidden="true">Andre</span>
+                <span class="text-layer fill-layer">Andre</span>
+            </div>
+            
+            <!-- Invisible tap/click zones over videos -->
+            <div class="tap-zone leon-zone" data-player="leon"></div>
+            <div class="tap-zone andre-zone" data-player="andre"></div>
+        </div>
+    </div>
+
+    <!-- Main Menu Screen (to be built next) -->
+    <div id="main-menu-screen" class="screen">
+        <!-- To be implemented -->
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

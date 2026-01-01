@@ -1,0 +1,459 @@
+/* ===================================
+   SuperMatch3 - Global Styles
+   =================================== */
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    background-color: #2a2a2a;
+}
+
+/* Screen Container System */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.screen.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* ===================================
+   Splash Screen
+   =================================== */
+
+#splash-screen {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+    flex-direction: column;
+}
+
+#splash-image {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center top;
+}
+
+/* Tap to Start Prompt */
+.tap-prompt {
+    position: absolute;
+    bottom: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 5vh;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 200, 100, 0.6),
+        3px 3px 6px rgba(0, 0, 0, 0.8);
+    animation: pulse 2s ease-in-out infinite;
+    cursor: pointer;
+    padding: 2vh 4vw;
+    background: rgba(255, 150, 50, 0.3);
+    border-radius: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    white-space: nowrap;
+}
+
+.tap-prompt.visible {
+    opacity: 1;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: translateX(-50%) scale(1);
+        text-shadow: 
+            0 0 20px rgba(255, 255, 255, 0.8),
+            0 0 40px rgba(255, 200, 100, 0.6),
+            3px 3px 6px rgba(0, 0, 0, 0.8);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.1);
+        text-shadow: 
+            0 0 30px rgba(255, 255, 255, 1),
+            0 0 60px rgba(255, 200, 100, 0.8),
+            3px 3px 6px rgba(0, 0, 0, 0.8);
+    }
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: absolute;
+    bottom: 8vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1.5vh;
+}
+
+.loading-indicator .dot {
+    width: 2vh;
+    height: 2vh;
+    background-color: #fff;
+    border-radius: 50%;
+    animation: loading 1.4s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.loading-indicator .dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.loading-indicator .dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-indicator .dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes loading {
+    0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+.loading-indicator.hidden {
+    display: none;
+}
+
+/* ===================================
+   Splash Screen Responsive
+   =================================== */
+
+@media (max-width: 480px) and (orientation: portrait) {
+    .tap-prompt {
+        font-size: 5vh;
+        bottom: 12vh;
+        padding: 2.5vh 6vw;
+    }
+}
+
+@media (max-height: 480px) and (orientation: landscape) {
+    .tap-prompt {
+        font-size: 3vh;
+        bottom: 10vh;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .tap-prompt {
+        font-size: 5vh;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .tap-prompt {
+        font-size: 4vh;
+    }
+}
+
+@media (min-width: 1025px) {
+    .tap-prompt {
+        font-size: 3rem;
+        cursor: pointer;
+    }
+    
+    .tap-prompt:hover {
+        background: rgba(255, 150, 50, 0.5);
+        transform: translateX(-50%) scale(1.05);
+    }
+}
+
+.tap-prompt:active {
+    transform: translateX(-50%) scale(0.95);
+    background: rgba(255, 150, 50, 0.6);
+}
+
+/* ===================================
+   Avatar Selection Screen
+   =================================== */
+
+#avatar-selection-screen {
+    background: #1a1a1a;
+    overflow: hidden;
+}
+
+.avatar-selection-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ===================================
+   VIDEOS - SIMPLIFIED (No constraints in base)
+   =================================== */
+
+.avatar-video {
+    position: absolute;
+    z-index: 1;
+    object-fit: contain;
+    pointer-events: none;
+    /* NO max-width or max-height here - let media queries control size */
+}
+
+/* Video Positions (same for all orientations) */
+.leon-video {
+    left: 26%;
+    top: 48%;
+    transform: translate(-50%, -50%);
+}
+
+.andre-video {
+    left: 76%;
+    top: 48%;
+    transform: translate(-50%, -50%);
+}
+
+/* Background Image */
+.selection-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+    object-position: center;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Character Names */
+.name-container {
+    position: absolute;
+    bottom: 25vh;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    animation: nameFadeIn 0.8s ease-out forwards;
+    pointer-events: none;
+}
+
+.text-layer {
+    grid-area: 1 / 1;
+    font-family: 'Fredoka One', cursive;
+    font-size: 8vh;
+    font-weight: normal;
+    letter-spacing: 0.05em;
+}
+
+.outline-layer {
+    -webkit-text-stroke: 8px #1a3a52;
+    color: #1a3a52;
+    z-index: 1;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.6))
+            drop-shadow(0 0 30px rgba(255, 200, 100, 0.5));
+}
+
+.fill-layer {
+    background: linear-gradient(to bottom,
+        #fff9c4 0%,
+        #FFD93D 20%,
+        #FFAA3D 50%,
+        #FF6B35 80%,
+        #e64a19 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    z-index: 2;
+}
+
+.leon-name {
+    left: 24%;
+    transform: translateX(-50%);
+    animation-delay: 0.4s;
+}
+
+.andre-name {
+    left: 78%;
+    transform: translateX(-50%);
+    animation-delay: 0.5s;
+}
+
+@keyframes nameFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Tap Zones */
+.tap-zone {
+    position: absolute;
+    z-index: 3;
+    cursor: pointer;
+    width: 30vh;
+    height: 60vh;
+    transition: all 0.3s ease;
+}
+
+.leon-zone {
+    left: 25%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.andre-zone {
+    left: 75%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.tap-zone:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+.tap-zone:active {
+    transform: translate(-50%, -50%) scale(0.98);
+}
+
+/* ===================================
+   RESPONSIVE - LANDSCAPE (Default)
+   =================================== */
+
+@media (orientation: landscape) {
+    .avatar-video {
+        width: 44vw;  /* SINGLE constraint for landscape */
+    }
+}
+
+/* ===================================
+   RESPONSIVE - PORTRAIT 
+   =================================== */
+
+@media (orientation: portrait) {
+    .avatar-video {
+        width: 77vw;  /* SINGLE constraint for portrait - ADJUST THIS to magnify or reduce the video size */
+    }
+    
+    .leon-video {
+        left: 30%;
+        top: 47.5%;
+    }
+    
+    .andre-video {
+        left: 78%;
+        top: 48%;
+    }
+    
+    .name-container {
+        bottom: 20vh;
+    }
+    
+    .leon-name {
+        left: 26%;
+    }
+    
+    .andre-name {
+        left: 76%;
+    }
+}
+
+/* ===================================
+   DEVICE-SPECIFIC OVERRIDES (If needed)
+   =================================== */
+
+/* iPhone Portrait - Only if different from base portrait */
+@media (max-width: 480px) and (orientation: portrait) {
+    .avatar-video {
+        width: 74vw;  /* Slightly bigger for small screens */
+    }
+    
+    .text-layer {
+        font-size: 5vh;
+    }
+    
+    .outline-layer {
+        -webkit-text-stroke: 5px #1a3a52;
+    }
+}
+
+/* iPhone Landscape */
+@media (max-height: 480px) and (orientation: landscape) {
+    .name-container {
+        bottom: 10vh;
+    }
+    
+    .text-layer {
+        font-size: 4vh;
+    }
+    
+    .outline-layer {
+        -webkit-text-stroke: 4px #1a3a52;
+    }
+}
+
+/* iPad Landscape */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .leon-name {
+        left: 24%;
+    }
+    
+    .andre-name {
+        left: 78%;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    .text-layer {
+        font-size: 4rem;
+    }
+    
+    .outline-layer {
+        -webkit-text-stroke: 10px #1a3a52;
+    }
+    
+    .tap-zone:hover {
+        cursor: pointer;
+    }
+}
+
+/* ===================================
+   Utility Classes
+   =================================== */
+
+.hidden {
+    display: none !important;
+}
+
+.fade-out {
+    opacity: 0 !important;
+}
