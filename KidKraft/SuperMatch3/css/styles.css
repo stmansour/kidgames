@@ -243,7 +243,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     z-index: 2;
     pointer-events: none;
@@ -393,7 +393,8 @@ body {
 /* iPhone Portrait - Only if different from base portrait */
 @media (max-width: 480px) and (orientation: portrait) {
     .avatar-video {
-        width: 74vw;  /* Slightly bigger for small screens */
+        width: 85vw;  /* Slightly bigger for small screens */
+        height: 65vh;
     }
     
     .text-layer {
