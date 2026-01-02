@@ -1,5 +1,6 @@
 /* ===================================
    SuperMatch3 - Main Application
+   FIXED CANVAS APPROACH
    =================================== */
 
 // Game State
@@ -25,6 +26,52 @@ const ASSETS = {
         andre: 'assets/videos/andre-rotation.mp4'
     }
 };
+
+/* ===================================
+   FIXED CANVAS SCALING
+   =================================== */
+
+// Reference canvas sizes
+const CANVAS_SIZE = {
+    landscape: { width: 1024, height: 768 },
+    portrait: { width: 768, height: 1024 }
+};
+
+/**
+ * Scale the avatar selection container to fit the screen
+ * This is the SIMPLE approach - no more vw/vh madness!
+ */
+function scaleAvatarCanvas() {
+    const container = document.querySelector('.avatar-selection-container');
+    if (!container) return;
+    
+    const orientation = getOrientation();
+    const canvasSize = CANVAS_SIZE[orientation];
+    
+    // Add orientation class
+    container.classList.remove('landscape', 'portrait');
+    container.classList.add(orientation);
+    
+    // Calculate scale to fit screen
+    const scaleX = window.innerWidth / canvasSize.width;
+    const scaleY = window.innerHeight / canvasSize.height;
+    const scale = Math.min(scaleX, scaleY);  // Maintain aspect ratio
+    
+    // Apply scale transformation
+    container.style.transform = `scale(${scale})`;
+    container.style.transformOrigin = 'top center';  // Never clip the top
+    
+    // Center vertically if there's extra space
+    const scaledHeight = canvasSize.height * scale;
+    if (scaledHeight < window.innerHeight) {
+        const topOffset = (window.innerHeight - scaledHeight) / 2;
+        container.style.top = `${topOffset}px`;
+    } else {
+        container.style.top = '0px';
+    }
+    
+    console.log(`Canvas scaled: ${orientation} at ${scale.toFixed(3)}x (${canvasSize.width}x${canvasSize.height})`);
+}
 
 /* ===================================
    Utility Functions
@@ -100,70 +147,83 @@ function switchScreen(fromScreenId, toScreenId) {
         setTimeout(() => {
             toScreen.classList.add('active');
             gameState.currentScreen = toScreenId.replace('-screen', '');
-            
-            // Initialize screen-specific logic
-            if (toScreenId === 'avatar-selection-screen') {
-                initAvatarSelectionScreen();
-            }
-        }, 500);
+        }, 100);
     }
 }
 
 /* ===================================
-   Splash Screen Logic
+   Splash Screen
    =================================== */
 
-async function initSplashScreen() {
+/**
+ * Initialize the splash screen
+ */
+function initSplashScreen() {
+    const splashScreen = document.getElementById('splash-screen');
     const splashImage = document.getElementById('splash-image');
     const tapPrompt = document.getElementById('tap-prompt');
     const loadingIndicator = document.getElementById('loading-indicator');
-    const splashScreen = document.getElementById('splash-screen');
     
     // Set correct splash image based on orientation
     const orientation = getOrientation();
     splashImage.src = ASSETS.splash[orientation];
     
     // Update splash image if orientation changes
-    window.addEventListener('orientationchange', () => {
-        setTimeout(() => {
-            const newOrientation = getOrientation();
-            splashImage.src = ASSETS.splash[newOrientation];
-        }, 100);
-    });
-    
-    // No preloading needed for video-based avatars
-    // Videos will load when avatar selection screen appears
-    console.log('Ready to start!');
-    
-    // Show tap prompt immediately
-    loadingIndicator.classList.add('hidden');
-    tapPrompt.classList.add('visible');
-    gameState.assetsLoaded = true;
-    
-    // Handle tap/click to start
-    const handleStart = () => {
-        // Initialize audio on user interaction (iOS requirement)
-        initAudioContext();
-        
-        // Remove event listeners
-        splashScreen.removeEventListener('click', handleStart);
-        splashScreen.removeEventListener('touchend', handleStart);
-        
-        // Transition to avatar selection screen
-        switchScreen('splash-screen', 'avatar-selection-screen');
+    const handleSplashOrientationChange = () => {
+        if (gameState.currentScreen === 'splash') {
+            setTimeout(() => {
+                const newOrientation = getOrientation();
+                splashImage.src = ASSETS.splash[newOrientation];
+            }, 100);
+        }
     };
     
-    // Add both click and touch events for compatibility
-    splashScreen.addEventListener('click', handleStart);
-    splashScreen.addEventListener('touchend', handleStart, { passive: true });
+    window.addEventListener('orientationchange', handleSplashOrientationChange);
+    window.addEventListener('resize', handleSplashOrientationChange);
+    
+    // Preload assets
+    const imagesToPreload = [
+        ASSETS.splash.portrait,
+        ASSETS.splash.landscape,
+        ASSETS.avatarSelection.portrait,
+        ASSETS.avatarSelection.landscape
+    ];
+    
+    preloadImages(imagesToPreload).then(success => {
+        if (success) {
+            gameState.assetsLoaded = true;
+            loadingIndicator.classList.add('hidden');
+            tapPrompt.classList.add('visible');
+        }
+    });
+    
+    // Handle tap to start
+    const handleTapToStart = (e) => {
+        e.preventDefault();
+        if (!gameState.assetsLoaded) return;
+        
+        // Initialize audio context on first user interaction (iOS requirement)
+        initAudioContext();
+        
+        // Switch to avatar selection screen
+        switchScreen('splash-screen', 'avatar-selection-screen');
+        initAvatarSelectionScreen();
+        
+        // Remove event listeners
+        splashScreen.removeEventListener('click', handleTapToStart);
+        splashScreen.removeEventListener('touchstart', handleTapToStart);
+    };
+    
+    splashScreen.addEventListener('click', handleTapToStart);
+    splashScreen.addEventListener('touchstart', handleTapToStart);
 }
 
 /* ===================================
-   Avatar Selection Screen Logic (Video-Based)
+   Avatar Selection Screen
    =================================== */
 
 /**
- * Initialize Avatar Selection Screen
+ * Initialize the avatar selection screen
  */
 function initAvatarSelectionScreen() {
     console.log('Initializing Avatar Selection Screen (Video)');
@@ -173,11 +233,15 @@ function initAvatarSelectionScreen() {
     const orientation = getOrientation();
     bgImage.src = ASSETS.avatarSelection[orientation];
     
-    // Update background if orientation changes
+    // SCALE THE CANVAS - This is the key!
+    scaleAvatarCanvas();
+    
+    // Update background and rescale when orientation changes
     const handleOrientationChange = () => {
         setTimeout(() => {
             const newOrientation = getOrientation();
             bgImage.src = ASSETS.avatarSelection[newOrientation];
+            scaleAvatarCanvas();  // Rescale on orientation change
         }, 100);
     };
     
@@ -188,15 +252,26 @@ function initAvatarSelectionScreen() {
     const leonVideo = document.querySelector('.leon-video');
     const andreVideo = document.querySelector('.andre-video');
     
-    // Ensure videos are muted (volume = 0)
+    // Force video looping (fix for Leon's video stopping)
+    const forceLoop = (video, name) => {
+        video.addEventListener('ended', function() {
+            console.log(`${name} video ended, restarting...`);
+            this.currentTime = 0;
+            this.play();
+        });
+    };
+    
+    // Ensure videos are muted and looping
     if (leonVideo) {
         leonVideo.muted = true;
         leonVideo.volume = 0;
+        forceLoop(leonVideo, 'Leon');
         leonVideo.play().catch(e => console.log('Leon video autoplay prevented:', e));
     }
     if (andreVideo) {
         andreVideo.muted = true;
         andreVideo.volume = 0;
+        forceLoop(andreVideo, 'Andre');
         andreVideo.play().catch(e => console.log('Andre video autoplay prevented:', e));
     }
     
@@ -228,21 +303,16 @@ function initAvatarSelectionScreen() {
             
             setTimeout(() => {
                 zone.style.transform = zone.style.transform.replace(/scale\([^)]*\)/, 'scale(1)');
-            }, 200);
-            
-            // Clean up orientation listeners
-            window.removeEventListener('orientationchange', handleOrientationChange);
-            window.removeEventListener('resize', handleOrientationChange);
-            
-            // Transition to main menu after brief delay
-            setTimeout(() => {
-                switchScreen('avatar-selection-screen', 'main-menu-screen');
-            }, 500);
+                
+                // TODO: Switch to main menu screen
+                console.log('Moving to main menu...', gameState.currentPlayer);
+                // switchScreen('avatar-selection-screen', 'main-menu-screen');
+            }, 300);
         };
         
-        // Add both click and touch events
+        // Add both click and touch handlers
         zone.addEventListener('click', handleSelection);
-        zone.addEventListener('touchend', handleSelection, { passive: false });
+        zone.addEventListener('touchstart', handleSelection);
     });
 }
 
@@ -250,29 +320,18 @@ function initAvatarSelectionScreen() {
    Application Initialization
    =================================== */
 
+// Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('SuperMatch3 starting...');
     initSplashScreen();
+    
+    // Set up global resize handler for canvas scaling
+    window.addEventListener('resize', () => {
+        if (gameState.currentScreen === 'avatar-selection') {
+            scaleAvatarCanvas();
+        }
+    });
 });
 
-// Prevent pull-to-refresh on mobile
-document.body.addEventListener('touchmove', (e) => {
-    if (e.touches.length > 1) {
-        e.preventDefault();
-    }
-}, { passive: false });
-
-// Prevent double-tap zoom on iOS
-let lastTouchEnd = 0;
-document.addEventListener('touchend', (e) => {
-    const now = Date.now();
-    if (now - lastTouchEnd <= 300) {
-        e.preventDefault();
-    }
-    lastTouchEnd = now;
-}, false);
-
-// Log orientation changes for debugging
-window.addEventListener('orientationchange', () => {
-    console.log(`Orientation changed to: ${getOrientation()}`);
-});
+// Ready to start message
+console.log('Ready to start!');

@@ -4,7 +4,7 @@
 lint: node_modules
 	@echo "Running ESLint..."
 	npm run lint
-op
+
 # Ensure node_modules exists
 node_modules: package.json
 	@if [ ! -d "node_modules" ]; then \
@@ -35,3 +35,7 @@ clean:
 	rm -rf node_modules
 	rm -f package-lock.json
 
+release:
+	scp -i ~/.ssh/id_sman index.html sman:~/www/kidkraft/SuperMatch3/
+	scp -i ~/.ssh/id_sman css/styles.css sman:~/www/kidkraft/SuperMatch3/css/
+	scp -i ~/.ssh/id_sman js/app.js sman:~/www/kidkraft/SuperMatch3/js/
