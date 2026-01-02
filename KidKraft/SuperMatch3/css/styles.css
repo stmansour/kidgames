@@ -277,7 +277,9 @@ body {
     z-index: 2;
 }
 
-/* LANDSCAPE NAME POSITIONS */
+/*---------------------------------------------
+    LANDSCAPE NAME POSITIONS 
+---------------------------------------------*/
 .landscape .text-layer {
     font-size: 60px;
 }
@@ -296,21 +298,23 @@ body {
     animation-delay: 0.5s;
 }
 
-/* PORTRAIT NAME POSITIONS */
+/*---------------------------------------------
+    PORTRAIT NAME POSITIONS 
+---------------------------------------------*/
 .portrait .text-layer {
     font-size: 50px;
 }
 
 .portrait .leon-name {
-    left: 200px;   /* 26% of 768px */
-    bottom: 205px; /* 20% of 1024px */
+    left: 220px;   /* 26% of 768px */
+    bottom: 340px; /* 20% of 1024px */
     transform: translateX(-50%);
     animation-delay: 0.4s;
 }
 
 .portrait .andre-name {
-    left: 584px;   /* 76% of 768px */
-    bottom: 205px;
+    left: 594px;   /* 76% of 768px */
+    bottom: 340px;
     transform: translateX(-50%);
     animation-delay: 0.5s;
 }
