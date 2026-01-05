@@ -187,10 +187,10 @@ body {
 ** LANDSCAPE POSITIONS 
 **************************************/
 .landscape .leon-video {
-    width: 495px;
+    width: 215px;
     height: auto;
     left: 230px;   /* 26% of 1024px */
-    top: 368px;    /* 47% of 768px */
+    top: 360px;    /* 47% of 768px */
     transform: translate(-50%, -50%);
 }
 
@@ -250,7 +250,7 @@ body {
 
 .text-layer {
     grid-area: 1 / 1;
-    font-family: 'Fredoka One', cursive;
+    font-family: 'Fredoka One', sans-serif;
     font-weight: normal;
     letter-spacing: 0.05em;
 }
